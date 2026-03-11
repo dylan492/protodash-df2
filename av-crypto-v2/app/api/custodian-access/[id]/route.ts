@@ -1,23 +1,25 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 
-// Create admin client with service role key to bypass RLS
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  }
-);
+function getAdminClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  );
+}
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    const supabaseAdmin = getAdminClient();
     const body = await request.json();
     
     const { data, error } = await supabaseAdmin
@@ -44,6 +46,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    const supabaseAdmin = getAdminClient();
     console.log(`[DELETE] Attempting to delete custodian access with ID: ${params.id}`);
     
     const { data, error } = await supabaseAdmin
