@@ -125,7 +125,7 @@ export function AssetDialog({ asset, trigger, onSuccess }: AssetDialogProps) {
         console.log("✅ Update result:", result);
       } else {
         console.log("➕ Executing INSERT...");
-        const { data: result, error } = await supabase
+        const { data: result, error } = await (supabase as any)
           .from("assets")
           .insert(payload)
           .select();
