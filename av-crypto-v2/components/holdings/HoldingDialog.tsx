@@ -120,7 +120,7 @@ export function HoldingDialog({ holding, trigger, onSuccess }: HoldingDialogProp
       
       if (isEditing) {
         console.log("Updating holding with ID:", holding.id);
-        const { data: result, error } = await supabase
+        const { data: result, error } = await (supabase as any)
           .from("holdings")
           .update({
             asset_id: data.asset_id,
@@ -131,7 +131,7 @@ export function HoldingDialog({ holding, trigger, onSuccess }: HoldingDialogProp
             unvested_status: data.unvested_status || null,
             wallet_address: data.wallet_address || null,
             notes: data.notes || null,
-          })
+          } as unknown as never)
           .eq("id", holding.id)
           .select();
 
@@ -153,7 +153,7 @@ export function HoldingDialog({ holding, trigger, onSuccess }: HoldingDialogProp
           unvested_status: data.unvested_status || null,
           wallet_address: data.wallet_address || null,
           notes: data.notes || null,
-        }).select();
+        } as unknown as never).select();
 
         console.log("Insert result:", result);
         console.log("Insert error:", error);
