@@ -127,7 +127,7 @@ export function EventDialog({ event, trigger, onSuccess }: EventDialogProps) {
       };
 
       if (isEditing) {
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from("events")
           .update(payload)
           .eq("id", event.id);
