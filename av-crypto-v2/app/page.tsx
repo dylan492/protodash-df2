@@ -135,9 +135,9 @@ export default function InventoryPage() {
         existing.vestedValue += vestedValue;
         existing.unvestedValue += unvestedValue;
         // Fix: track custodian names in a Set to get accurate count
-        if (!existing._custodianSet) existing._custodianSet = new Set([holding.custodian]);
-        else (existing._custodianSet as Set<string>).add(holding.custodian);
-        existing.custodianCount = (existing._custodianSet as Set<string>).size;
+        if (!(existing as any)._custodianSet) (existing as any)._custodianSet = new Set([holding.custodian]);
+        else ((existing as any)._custodianSet as Set<string>).add(holding.custodian);
+        existing.custodianCount = ((existing as any)._custodianSet as Set<string>).size;
       } else {
         assetMap.set(asset.id, {
           asset,
