@@ -88,7 +88,7 @@ export function TransactionDialog({ transaction, trigger, onSuccess }: Transacti
   const { data: assets } = useQuery({
     queryKey: ["assets"],
     queryFn: async () => {
-      const { data } = await supabase.from("assets").select("*").order("symbol");
+      const { data } = await (supabase as any).from("assets").select("*").order("symbol");
       return data as Asset[];
     },
   });
@@ -130,7 +130,7 @@ export function TransactionDialog({ transaction, trigger, onSuccess }: Transacti
       };
 
       if (isEditing) {
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from("transactions")
           .update(payload)
           .eq("id", transaction.id);
