@@ -134,7 +134,7 @@ export function EventDialog({ event, trigger, onSuccess }: EventDialogProps) {
 
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("events").insert(payload);
+        const { error } = await (supabase as any).from("events").insert(payload);
         if (error) throw error;
       }
     },
