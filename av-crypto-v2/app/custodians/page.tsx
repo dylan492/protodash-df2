@@ -193,7 +193,7 @@ export default function CustodiansPage() {
             key_masked: masked,
             status: "configured",
             updated_at: new Date().toISOString(),
-          })
+          } as unknown as never)
           .eq("id", existing.id);
         if (error) throw error;
       } else {
