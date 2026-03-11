@@ -79,7 +79,7 @@ export default function EventsPage() {
     mutationFn: async ({ id, newStatus }: { id: string; newStatus: string }) => {
       const { error } = await supabase
         .from("events")
-        .update({ status: newStatus } as any)
+        .update({ status: newStatus } as unknown as never)
         .eq("id", id);
       if (error) throw error;
     },
