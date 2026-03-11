@@ -187,23 +187,23 @@ export default function CustodiansPage() {
       const existing = apiKeys?.find((k) => k.custodian === custodian);
 
       if (existing) {
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from("custodian_api_keys")
           .update({
             key_masked: masked,
             status: "configured",
             updated_at: new Date().toISOString(),
-          } as unknown as never)
+          })
           .eq("id", existing.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from("custodian_api_keys")
           .insert({
             custodian,
             key_masked: masked,
             status: "configured",
-          } as uknown as never);
+          });
         if (error) throw error;
       }
     },
