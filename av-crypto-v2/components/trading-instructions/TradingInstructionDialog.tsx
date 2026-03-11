@@ -76,7 +76,7 @@ export function TradingInstructionDialog({
   const { data: assets } = useQuery({
     queryKey: ["assets"],
     queryFn: async () => {
-      const { data } = await supabase.from("assets").select("*").order("symbol");
+      const { data } = await (supabase as any).from("assets").select("*").order("symbol");
       return data as Asset[];
     },
   });
@@ -125,7 +125,7 @@ export function TradingInstructionDialog({
 
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("trading_instructions").insert(payload);
+        const { error } = await (supabase as any).from("trading_instructions").insert(payload);
         if (error) throw error;
       }
     },
@@ -153,7 +153,7 @@ export function TradingInstructionDialog({
   const deleteMutation = useMutation({
     mutationFn: async () => {
       if (!instruction) return;
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from("trading_instructions")
         .delete()
         .eq("id", instruction.id);
