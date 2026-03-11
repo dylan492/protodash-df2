@@ -162,7 +162,7 @@ export function EventDialog({ event, trigger, onSuccess }: EventDialogProps) {
   const deleteMutation = useMutation({
     mutationFn: async () => {
       if (!event) return;
-      const { error } = await supabase.from("events").delete().eq("id", event.id);
+      const { error } = await (supabase as any).from("events").delete().eq("id", event.id);
       if (error) throw error;
     },
     onSuccess: () => {

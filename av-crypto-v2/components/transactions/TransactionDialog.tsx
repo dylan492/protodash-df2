@@ -137,7 +137,7 @@ export function TransactionDialog({ transaction, trigger, onSuccess }: Transacti
 
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("transactions").insert(payload);
+        const { error } = await (supabase as any).from("transactions").insert(payload);
         if (error) throw error;
       }
     },
