@@ -291,7 +291,7 @@ export function TransactionDialog({ transaction, trigger, onSuccess }: Transacti
                 <FormItem>
                   <FormLabel>USD Cost Basis (Optional)</FormLabel>
                   <FormControl>
-                    <Input type="number" step="0.01" placeholder="0.00" {...field} />
+                    <Input type="number" step="0.01" placeholder="0.00" {...field} value={field.value ?? ""} />
                   </FormControl>
                   <FormDescription>
                     Total USD value of the transaction
