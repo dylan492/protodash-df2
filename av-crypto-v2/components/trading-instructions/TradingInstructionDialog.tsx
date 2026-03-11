@@ -118,7 +118,7 @@ export function TradingInstructionDialog({
       };
 
       if (isEditing) {
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from("trading_instructions")
           .update(payload)
           .eq("id", instruction.id);
