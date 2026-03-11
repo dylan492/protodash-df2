@@ -203,7 +203,7 @@ export default function CustodiansPage() {
             custodian,
             key_masked: masked,
             status: "configured",
-          });
+          } as uknown as never);
         if (error) throw error;
       }
     },
