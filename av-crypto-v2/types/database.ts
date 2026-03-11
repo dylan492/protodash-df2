@@ -44,6 +44,10 @@ export interface Database {
           asset_id: string;
           custodian: string;
           units: number;
+          total_units: number;
+          vested_units: number | null;
+          unvested_units: number | null;
+          unvested_status: string | null;
           wallet_address: string | null;
           notes: string | null;
           created_at: string;
@@ -54,6 +58,10 @@ export interface Database {
           asset_id: string;
           custodian: string;
           units?: number;
+          total_units?: number;
+          vested_units?: number | null;
+          unvested_units?: number | null;
+          unvested_status?: string | null;
           wallet_address?: string | null;
           notes?: string | null;
           created_at?: string;
@@ -64,6 +72,10 @@ export interface Database {
           asset_id?: string;
           custodian?: string;
           units?: number;
+          total_units?: number;
+          vested_units?: number | null;
+          unvested_units?: number | null;
+          unvested_status?: string | null;
           wallet_address?: string | null;
           notes?: string | null;
           created_at?: string;
@@ -236,6 +248,35 @@ export interface Database {
           created_at?: string;
         };
       };
+      custodian_api_keys: {
+        Row: {
+          id: string;
+          custodian: string;
+          key_masked: string | null;
+          status: string;
+          last_tested_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          custodian: string;
+          key_masked?: string | null;
+          status?: string;
+          last_tested_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          custodian?: string;
+          key_masked?: string | null;
+          status?: string;
+          last_tested_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       asset_prices: {
         Row: {
           id: string;
@@ -278,6 +319,10 @@ export interface Database {
           asset_id: string;
           custodian: string;
           units: number;
+          total_units: number;
+          vested_units: number | null;
+          unvested_units: number | null;
+          unvested_status: string | null;
           wallet_address: string | null;
           notes: string | null;
           created_at: string;
@@ -295,43 +340,4 @@ export interface Database {
       };
     };
   };
-}
-
-// Extend Database type with custodian_api_keys
-declare module "./database" {
-  interface Database {
-    public: {
-      Tables: {
-        custodian_api_keys: {
-          Row: {
-            id: string;
-            custodian: string;
-            key_masked: string | null;
-            status: string;
-            last_tested_at: string | null;
-            created_at: string;
-            updated_at: string;
-          };
-          Insert: {
-            id?: string;
-            custodian: string;
-            key_masked?: string | null;
-            status?: string;
-            last_tested_at?: string | null;
-            created_at?: string;
-            updated_at?: string;
-          };
-          Update: {
-            id?: string;
-            custodian?: string;
-            key_masked?: string | null;
-            status?: string;
-            last_tested_at?: string | null;
-            created_at?: string;
-            updated_at?: string;
-          };
-        };
-      };
-    };
-  }
 }
