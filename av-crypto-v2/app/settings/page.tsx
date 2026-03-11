@@ -56,7 +56,7 @@ export default function SettingsPage() {
         .select("*")
         .eq("user_id", currentUser.id)
         .single();
-      return data as UserRole;
+      return data as unkown as UserRole;
     },
     enabled: !!currentUser,
   });
