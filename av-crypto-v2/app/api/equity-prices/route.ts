@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+export const dynamic = 'force-dynamic';
 
 const EQUITY_SYMBOL_MAP: Record<string, string> = {
   CMPX: "CMPS",

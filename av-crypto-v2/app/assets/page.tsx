@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -87,13 +88,12 @@ interface Event {
   jira_ticket_id: string | null;
 }
 
-export default function AssetDetailPage() {
+function AssetDetailPageInner() {
   const supabase = createClient();
   const searchParams = useSearchParams();
   const router = useRouter();
   const symbol = searchParams.get("symbol");
 
-  // Fetch asset by symbol
   const { data: asset, isLoading: assetLoading } = useQuery({
     queryKey: ["asset", symbol],
     queryFn: async () => {
@@ -108,7 +108,6 @@ export default function AssetDetailPage() {
     enabled: !!symbol,
   });
 
-  // Fetch all assets for navigation
   const { data: assets, isLoading: assetsLoading } = useQuery({
     queryKey: ["assets"],
     queryFn: async () => {
@@ -117,12 +116,10 @@ export default function AssetDetailPage() {
     },
   });
 
-  // Auto-redirect to first asset if no symbol selected
   if (!symbol && assets && assets.length > 0 && !assetsLoading) {
     router.push(`/assets?symbol=${assets[0].symbol}`);
   }
 
-  // Fetch holdings for this asset
   const { data: holdings, isLoading: holdingsLoading } = useQuery({
     queryKey: ["holdings", asset?.id],
     queryFn: async () => {
@@ -137,7 +134,6 @@ export default function AssetDetailPage() {
     enabled: !!asset?.id,
   });
 
-  // Fetch trading instructions for this asset
   const { data: instructions, isLoading: instructionsLoading } = useQuery({
     queryKey: ["trading_instructions", asset?.id],
     queryFn: async () => {
@@ -152,7 +148,6 @@ export default function AssetDetailPage() {
     enabled: !!asset?.id,
   });
 
-  // Fetch transactions for this asset
   const { data: transactions, isLoading: transactionsLoading } = useQuery({
     queryKey: ["transactions", asset?.id],
     queryFn: async () => {
@@ -167,7 +162,6 @@ export default function AssetDetailPage() {
     enabled: !!asset?.id,
   });
 
-  // Fetch events for this asset
   const { data: events, isLoading: eventsLoading } = useQuery({
     queryKey: ["events", asset?.id],
     queryFn: async () => {
@@ -182,10 +176,8 @@ export default function AssetDetailPage() {
     enabled: !!asset?.id,
   });
 
-  // Fetch price for this asset
   const { data: priceData, isLoading: priceLoading } = usePrice(symbol || "");
 
-  // Calculate totals
   const totalUnits = useMemo(() => {
     if (!holdings) return 0;
     return holdings.reduce((sum, h) => sum + h.total_units, 0);
@@ -449,29 +441,17 @@ export default function AssetDetailPage() {
                     {isLoading ? (
                       Array.from({ length: 3 }).map((_, i) => (
                         <TableRow key={i}>
-                          <TableCell>
-                            <Skeleton className="h-4 w-32" />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton className="h-4 w-24" />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton className="h-4 w-24" />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton className="h-4 w-24" />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton className="h-4 w-24" />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton className="h-4 w-16" />
-                          </TableCell>
+                          <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                          <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                          <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                          <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                          <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                          <TableCell><Skeleton className="h-4 w-16" /></TableCell>
                         </TableRow>
                       ))
                     ) : holdings && holdings.length > 0 ? (
                       holdings.map((holding) => {
-                        const totalValue = (priceData?.usd || 0) * holding.total_units;
+                        const holdingValue = (priceData?.usd || 0) * holding.total_units;
                         const vestedValue = (priceData?.usd || 0) * (holding.vested_units || 0);
                         const unvestedValue = (priceData?.usd || 0) * (holding.unvested_units || 0);
                         const percentage =
@@ -501,7 +481,7 @@ export default function AssetDetailPage() {
                               </div>
                             </TableCell>
                             <TableCell className="text-right font-medium">
-                              {formatCurrency(totalValue)}
+                              {formatCurrency(holdingValue)}
                             </TableCell>
                             <TableCell className="text-right mono">
                               {percentage.toFixed(1)}%
@@ -511,10 +491,7 @@ export default function AssetDetailPage() {
                       })
                     ) : (
                       <TableRow>
-                        <TableCell
-                          colSpan={6}
-                          className="text-center text-muted-foreground"
-                        >
+                        <TableCell colSpan={6} className="text-center text-muted-foreground">
                           No holdings found
                         </TableCell>
                       </TableRow>
@@ -541,10 +518,7 @@ export default function AssetDetailPage() {
                 ) : instructions && instructions.length > 0 ? (
                   <div className="space-y-4">
                     {instructions.map((instruction) => (
-                      <div
-                        key={instruction.id}
-                        className="border rounded-lg p-4 space-y-2"
-                      >
+                      <div key={instruction.id} className="border rounded-lg p-4 space-y-2">
                         <div className="flex items-start justify-between">
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
@@ -621,24 +595,12 @@ export default function AssetDetailPage() {
                     {transactionsLoading ? (
                       Array.from({ length: 5 }).map((_, i) => (
                         <TableRow key={i}>
-                          <TableCell>
-                            <Skeleton className="h-4 w-24" />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton className="h-4 w-16" />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton className="h-4 w-32" />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton className="h-4 w-20" />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton className="h-4 w-24" />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton className="h-4 w-20" />
-                          </TableCell>
+                          <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                          <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                          <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                          <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                          <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                          <TableCell><Skeleton className="h-4 w-20" /></TableCell>
                         </TableRow>
                       ))
                     ) : transactions && transactions.length > 0 ? (
@@ -658,27 +620,20 @@ export default function AssetDetailPage() {
                             {formatNumber(tx.quantity, 2)}
                           </TableCell>
                           <TableCell className="text-right">
-                            {tx.usd_cost_basis
-                              ? formatCurrency(tx.usd_cost_basis)
-                              : "—"}
+                            {tx.usd_cost_basis ? formatCurrency(tx.usd_cost_basis) : "—"}
                           </TableCell>
                           <TableCell>
                             {tx.jira_ticket_id ? (
                               <span className="text-xs text-muted-foreground">
                                 {tx.jira_ticket_id}
                               </span>
-                            ) : (
-                              "—"
-                            )}
+                            ) : "—"}
                           </TableCell>
                         </TableRow>
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell
-                          colSpan={6}
-                          className="text-center text-muted-foreground"
-                        >
+                        <TableCell colSpan={6} className="text-center text-muted-foreground">
                           No transactions found
                         </TableCell>
                       </TableRow>
@@ -705,10 +660,7 @@ export default function AssetDetailPage() {
                 ) : events && events.length > 0 ? (
                   <div className="space-y-4">
                     {events.map((event) => (
-                      <div
-                        key={event.id}
-                        className="border rounded-lg p-4 space-y-2"
-                      >
+                      <div key={event.id} className="border rounded-lg p-4 space-y-2">
                         <div className="flex items-start justify-between">
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
@@ -723,11 +675,7 @@ export default function AssetDetailPage() {
                               <p className="text-sm">{event.description}</p>
                             )}
                           </div>
-                          <Badge
-                            variant={
-                              event.status === "complete" ? "default" : "secondary"
-                            }
-                          >
+                          <Badge variant={event.status === "complete" ? "default" : "secondary"}>
                             {event.status}
                           </Badge>
                         </div>
@@ -752,5 +700,13 @@ export default function AssetDetailPage() {
         <DataDisclaimer message="Data is updated in real-time. Transaction history and events are for reference only." />
       </div>
     </PageLayout>
+  );
+}
+
+export default function AssetDetailPage() {
+  return (
+    <Suspense fallback={null}>
+      <AssetDetailPageInner />
+    </Suspense>
   );
 }
