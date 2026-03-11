@@ -247,7 +247,7 @@ export default function AssetDetailPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <TradingInstructionDialog assetId={asset?.id} />
+            <TradingInstructionDialog defaultAssetId={asset?.id} />
             <Select value={symbol || undefined} onValueChange={(value) => router.push(`/assets?symbol=${value}`)}>
               <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="Select asset" />
